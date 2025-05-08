@@ -54,13 +54,45 @@ public class GeminiService {
     private String buildPrompt(String type, String content) {
         switch (type.toLowerCase()) {
             case "blog":
-                return "Write a blog post based on: " + content;
+                return "Write a professional, engaging blog post based on: " + content;
             case "caption":
-                return "Write a caption for: " + content;
+                return "Write a creative and engaging caption for: " + content;
             case "summary":
-                return "Summarize: " + content;
+                return "Provide a concise summary of: " + content;
             case "notes":
-                return "Write notes about: " + content;
+                return "Create organized, comprehensive notes about: " + content;
+            case "social":
+                return "Create an engaging social media post about: " + content;
+            case "email":
+                return "Write a professional email template regarding: " + content;
+            case "article":
+                return "Write a detailed, well-researched article about: " + content;
+            case "product":
+                return "Write a compelling product description for: " + content;
+            case "seo":
+                return "Create SEO-friendly content about: " + content + ". Include relevant keywords naturally.";
+            case "ad":
+                return "Write persuasive advertising copy for: " + content;
+            case "script":
+                return "Create a video script about: " + content;
+            case "press":
+                return "Write a formal press release announcing: " + content;
+            case "technical":
+                return "Create clear, detailed technical documentation for: " + content;
+            case "faq":
+                return "Generate a list of FAQs with answers about: " + content;
+            case "newsletter":
+                return "Write an informative newsletter about: " + content;
+            case "review":
+                return "Write a balanced product review for: " + content;
+            case "tutorial":
+                return "Create a step-by-step tutorial on how to: " + content;
+            case "outline":
+                return "Create a detailed content outline for: " + content;
+            case "headline":
+                return "Generate 5 engaging headlines for content about: " + content;
+            case "meta":
+                return "Write SEO meta descriptions for: " + content;
             default:
                 return content;
         }
