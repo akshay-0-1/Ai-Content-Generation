@@ -31,8 +31,12 @@ public class AuthService {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
         User user = new User();
         user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRoles(Collections.singleton("ROLE_USER"));
         userRepository.save(user);
@@ -42,19 +46,20 @@ public class AuthService {
     public LoginResponse login(LoginRequest request) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
         } catch (BadCredentialsException e) {
-            throw new RuntimeException("Invalid username or password");
+            throw new RuntimeException("Invalid email or password");
         }
-        UserDetails user = userRepository.findByUsername(request.getUsername())
+        UserDetails user = userRepository.findByEmail(request.getEmail())
                 .map(u -> new org.springframework.security.core.userdetails.User(
-                        u.getUsername(),
+                        u.getEmail(),
                         u.getPassword(),
                         u.getRoles().stream().map(SimpleGrantedAuthority::new).toList()
                 )).orElseThrow(() -> new RuntimeException("User not found"));
 
-        String token = jwtUtil.generateToken(user.getUsername());
+        // Pass email as username to JWT util for token generation (your JwtUtil uses token subject as username)
+        String token = jwtUtil.generateToken(user.getUsername());  // user.getUsername() is email here
         String msg = "Login successful! Use this token for Authorization header: Bearer <token>";
         return new LoginResponse(msg, token);
     }

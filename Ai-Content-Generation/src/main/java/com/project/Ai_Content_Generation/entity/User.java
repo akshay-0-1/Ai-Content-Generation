@@ -10,12 +10,13 @@ import java.util.Set;
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
-    private String password;
 
+    private String username;
+    @Column(unique = true)
+    private String email;
+    private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> roles;
-
 }
 
