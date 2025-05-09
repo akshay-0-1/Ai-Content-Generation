@@ -1,7 +1,6 @@
 package com.project.Ai_Content_Generation.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.project.Ai_Content_Generation.service.GeminiService;
 import lombok.Data;
 
 import java.util.List;
