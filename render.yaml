@@ -21,6 +21,14 @@ services:
         value: 86400000
       - key: GEMINI_API_KEY
         sync: false
+      - key: jakarta.persistence.jdbc.url
+        sync: false
+      - key: jakarta.persistence.jdbc.user
+        sync: false
+      - key: jakarta.persistence.jdbc.password
+        sync: false
+      - key: jakarta.persistence.jdbc.driver
+        value: org.postgresql.Driver
       - key: SPRING_DATASOURCE_URL
         sync: false
       - key: SPRING_DATASOURCE_USERNAME
