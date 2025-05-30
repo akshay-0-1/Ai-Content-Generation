@@ -1,4 +1,4 @@
-FROM maven:3.8.5-openjdk-17 AS build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
 # Copy the Maven configuration files
@@ -16,7 +16,7 @@ COPY src src
 RUN mvn package -DskipTests
 
 # For the runtime image
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:21-jdk-jammy
 WORKDIR /app
 
 # Copy the jar file from the build stage
