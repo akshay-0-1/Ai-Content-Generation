@@ -21,35 +21,24 @@ services:
         value: 86400000
       - key: GEMINI_API_KEY
         sync: false
-      # Database connection properties
+      # Map environment variables from .env file to Spring Boot expected names
       - key: SPRING_DATASOURCE_URL
-        sync: false
+        fromEnvVar: DB_URL
       - key: SPRING_DATASOURCE_USERNAME
-        sync: false
+        fromEnvVar: DB_USERNAME
       - key: SPRING_DATASOURCE_PASSWORD
-        sync: false
+        fromEnvVar: DB_PASSWORD
       - key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
         value: org.postgresql.Driver
         
-      # Jakarta Persistence properties
-      - key: jakarta.persistence.jdbc.url
-        sync: false
-      - key: jakarta.persistence.jdbc.user
-        sync: false
-      - key: jakarta.persistence.jdbc.password
-        sync: false
-      - key: jakarta.persistence.jdbc.driver
-        value: org.postgresql.Driver
-        
-      # Hibernate properties
-      - key: hibernate.dialect
-        value: org.hibernate.dialect.PostgreSQLDialect
+      # Set Spring JPA properties
       - key: SPRING_JPA_DATABASE_PLATFORM
         value: org.hibernate.dialect.PostgreSQLDialect
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
       - key: SPRING_JPA_SHOW_SQL
         value: "false"
-      - key: hibernate.connection.provider_class
-        value: org.hibernate.hikaricp.internal.HikariCPConnectionProvider
+      - key: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+        value: org.hibernate.dialect.PostgreSQLDialect
     buildCommand: ./mvnw clean package -DskipTests
+    envVarsFile: .env
