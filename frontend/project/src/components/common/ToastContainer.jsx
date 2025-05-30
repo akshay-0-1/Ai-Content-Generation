@@ -8,7 +8,7 @@ import {
   X 
 } from 'lucide-react';
 
-const ToastContainer: React.FC = () => {
+const ToastContainer = () => {
   const { toasts, removeToast } = useToast();
 
   if (toasts.length === 0) return null;

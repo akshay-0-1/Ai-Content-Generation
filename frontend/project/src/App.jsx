@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import ContentGeneratorPage from './pages/content/ContentGeneratorPage';
+import ContentDetailPage from './pages/content/ContentDetailPage';
 import ContentHistoryPage from './pages/content/ContentHistoryPage';
 import AboutPage from './pages/AboutPage';
 import ProfilePage from './pages/profile/ProfilePage';
@@ -28,6 +29,11 @@ function App() {
                 <Route path="/generate" element={
                   <ProtectedRoute>
                     <ContentGeneratorPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/generate/:contentTypeId" element={
+                  <ProtectedRoute>
+                    <ContentDetailPage />
                   </ProtectedRoute>
                 } />
                 <Route path="/history" element={

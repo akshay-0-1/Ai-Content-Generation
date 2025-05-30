@@ -1,21 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-interface DropdownOption {
-  value: string;
-  label: string;
-}
-
-interface DropdownProps {
-  options: DropdownOption[];
-  value: string;
-  onChange: (value: string) => void;
-  label?: string;
-  placeholder?: string;
-  error?: string;
-}
-
-const Dropdown: React.FC<DropdownProps> = ({
+const Dropdown = ({
   options,
   value,
   onChange,
@@ -24,21 +10,21 @@ const Dropdown: React.FC<DropdownProps> = ({
   error,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef(null);
 
   const selectedOption = options.find((option) => option.value === value);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
-  const handleSelect = (optionValue: string) => {
+  const handleSelect = (optionValue) => {
     onChange(optionValue);
     setIsOpen(false);
   };
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };

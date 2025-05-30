@@ -10,7 +10,7 @@ import {
   Sparkles
 } from 'lucide-react';
 
-const HomePage: React.FC = () => {
+const HomePage = () => {
   const { isAuthenticated } = useAuth();
 
   return (
@@ -87,19 +87,19 @@ const HomePage: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 text-center">Marketing Copy</h3>
                 <p className="text-gray-600 dark:text-gray-300 text-center">
-                  Generate compelling ad copy, product descriptions, and SEO content that converts.
+                  Generate compelling ad copy, product descriptions, and marketing materials.
                 </p>
               </div>
             </div>
             
             <div className="w-full md:w-1/2 lg:w-1/4 px-4 mb-8">
               <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 h-full transition-transform hover:translate-y-[-5px]">
-                <div className="text-red-500 mb-4 flex justify-center">
+                <div className="text-pink-500 mb-4 flex justify-center">
                   <BookOpen size={48} />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 text-center">Educational Content</h3>
                 <p className="text-gray-600 dark:text-gray-300 text-center">
-                  Create summaries, tutorials, FAQs, and educational materials with ease.
+                  Create tutorials, guides, summaries, and educational materials with ease.
                 </p>
               </div>
             </div>

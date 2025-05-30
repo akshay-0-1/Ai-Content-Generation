@@ -9,7 +9,7 @@ import {
   Users 
 } from 'lucide-react';
 
-const AboutPage: React.FC = () => {
+const AboutPage = () => {
   return (
     <div className="bg-white dark:bg-gray-900">
       {/* Hero Section */}
@@ -87,27 +87,26 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Content Generation Process */}
+      {/* How It Works */}
       <section className="py-20 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">How AI Content Generation Works</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">How Our AI Works</h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Understanding the technology behind our platform
+              A glimpse into our content generation process
             </p>
           </div>
           
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-blue-200 dark:bg-blue-900"></div>
-            
-            {/* Timeline items */}
-            <div className="space-y-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="relative">
+              {/* Timeline line */}
+              <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-gray-300 dark:bg-gray-600"></div>
+              
               <div className="flex flex-col md:flex-row items-center">
                 <div className="md:w-1/2 md:pr-12 md:text-right mb-6 md:mb-0">
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Natural Language Understanding</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Input Analysis</h3>
                   <p className="text-gray-600 dark:text-gray-300">
-                    Our AI analyzes your prompt to understand the context, tone, and requirements of your content request.
+                    Our AI analyzes your prompt to understand the context, tone, and specific requirements.
                   </p>
                 </div>
                 <div className="md:w-12 relative flex justify-center">
@@ -116,7 +115,7 @@ const AboutPage: React.FC = () => {
                 <div className="md:w-1/2 md:pl-12 hidden md:block"></div>
               </div>
               
-              <div className="flex flex-col md:flex-row items-center">
+              <div className="flex flex-col md:flex-row items-center mt-12">
                 <div className="md:w-1/2 md:pr-12 hidden md:block"></div>
                 <div className="md:w-12 relative flex justify-center">
                   <div className="h-12 w-12 rounded-full bg-purple-500 flex items-center justify-center text-white z-10">2</div>
@@ -124,12 +123,12 @@ const AboutPage: React.FC = () => {
                 <div className="md:w-1/2 md:pl-12 md:text-left mt-6 md:mt-0">
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Content Generation</h3>
                   <p className="text-gray-600 dark:text-gray-300">
-                    Based on your chosen content type, our specialized models generate relevant, high-quality content.
+                    The AI generates multiple content variations based on your requirements and the selected content type.
                   </p>
                 </div>
               </div>
               
-              <div className="flex flex-col md:flex-row items-center">
+              <div className="flex flex-col md:flex-row items-center mt-12">
                 <div className="md:w-1/2 md:pr-12 md:text-right mb-6 md:mb-0">
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Quality Enhancement</h3>
                   <p className="text-gray-600 dark:text-gray-300">
@@ -142,7 +141,7 @@ const AboutPage: React.FC = () => {
                 <div className="md:w-1/2 md:pl-12 hidden md:block"></div>
               </div>
               
-              <div className="flex flex-col md:flex-row items-center">
+              <div className="flex flex-col md:flex-row items-center mt-12">
                 <div className="md:w-1/2 md:pr-12 hidden md:block"></div>
                 <div className="md:w-12 relative flex justify-center">
                   <div className="h-12 w-12 rounded-full bg-red-500 flex items-center justify-center text-white z-10">4</div>

@@ -4,10 +4,9 @@ import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import Dropdown from '../../components/common/Dropdown';
 import { useToast } from '../../context/ToastContext';
-import { GeneratedContent, ContentType } from '../../types';
 
 // Mock content history data
-const mockContentHistory: GeneratedContent[] = [
+const mockContentHistory = [
   {
     id: '1',
     title: 'The Future of AI Technology',
@@ -66,12 +65,12 @@ const typeFilterOptions = [
   { value: 'educational', label: 'Educational' },
 ];
 
-const ContentHistoryPage: React.FC = () => {
+const ContentHistoryPage = () => {
   const { addToast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [dateFilter, setDateFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
-  const [filteredContent, setFilteredContent] = useState<GeneratedContent[]>(mockContentHistory);
+  const [filteredContent, setFilteredContent] = useState(mockContentHistory);
 
   useEffect(() => {
     // Apply filters
@@ -117,50 +116,61 @@ const ContentHistoryPage: React.FC = () => {
     setFilteredContent(filtered);
   }, [searchQuery, dateFilter, typeFilter]);
 
-  const formatDate = (dateString: string): string => {
+  // Format date for display
+  const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
-      year: 'numeric',
       month: 'short',
       day: 'numeric',
+      year: 'numeric',
     });
   };
 
-  const handleCopy = (content: string) => {
-    navigator.clipboard.writeText(content)
-      .then(() => {
-        addToast('Content copied to clipboard!', 'success');
-      })
-      .catch(() => {
-        addToast('Failed to copy content', 'error');
+  // Handle copy to clipboard
+  const handleCopy = (content) => {
+    navigator.clipboard.writeText(content).then(() => {
+      addToast({
+        id: Date.now().toString(),
+        message: 'Content copied to clipboard',
+        type: 'success',
       });
+    });
   };
 
-  const handleRegenerate = (prompt: string, contentTypeId: string) => {
-    // In a real app, this would navigate to the generator page with prefilled values
-    addToast('Navigating to generator with your content...', 'info');
+  // Handle regenerate content
+  const handleRegenerate = (prompt, contentTypeId) => {
+    // Navigate to generator page with pre-filled values
+    console.log(`Regenerating content with prompt: ${prompt} and type: ${contentTypeId}`);
   };
 
   return (
-    <div className="py-12">
-      <div className="container mx-auto px-4">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Content History</h1>
+    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="flex-grow p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              Content History
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              View and manage your previously generated content
+            </p>
+          </div>
           
           {/* Filters */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-grow">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Search size={18} className="text-gray-400" />
                   </div>
-                  <input
+                  <Input
                     type="text"
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    placeholder="Search content..."
+                    placeholder="Search by title or prompt"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
                   />
                 </div>
               </div>
@@ -171,7 +181,7 @@ const ContentHistoryPage: React.FC = () => {
                     options={dateFilterOptions}
                     value={dateFilter}
                     onChange={setDateFilter}
-                    placeholder="Date"
+                    placeholder="Date Range"
                   />
                 </div>
                 

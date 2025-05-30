@@ -22,15 +22,13 @@ const registerSchema = z.object({
   path: ['confirmPassword'],
 });
 
-type RegisterFormValues = z.infer<typeof registerSchema>;
-
-const RegisterPage: React.FC = () => {
+const RegisterPage = () => {
   const navigate = useNavigate();
   const { register: registerUser } = useAuth();
   const { addToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<RegisterFormValues>({
+  const { register, handleSubmit, formState: { errors }, watch } = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       username: '',
@@ -44,7 +42,7 @@ const RegisterPage: React.FC = () => {
   const password = watch('password');
 
   // Calculate password strength
-  const getPasswordStrength = (password: string): { strength: number, label: string, color: string } => {
+  const getPasswordStrength = (password) => {
     if (!password) return { strength: 0, label: 'None', color: 'bg-gray-200 dark:bg-gray-600' };
     
     let strength = 0;
@@ -83,15 +81,23 @@ const RegisterPage: React.FC = () => {
 
   const passwordStrength = getPasswordStrength(password);
 
-  const onSubmit = async (data: RegisterFormValues) => {
+  const onSubmit = async (data) => {
     setIsLoading(true);
     
     try {
       await registerUser(data.username, data.email, data.password);
-      addToast('Registration successful!', 'success');
+      addToast({
+        id: Date.now().toString(),
+        message: 'Registration successful!',
+        type: 'success'
+      });
       navigate('/generate');
     } catch (error) {
-      addToast('Registration failed', 'error');
+      addToast({
+        id: Date.now().toString(),
+        message: 'Registration failed',
+        type: 'error'
+      });
       console.error(error);
     } finally {
       setIsLoading(false);

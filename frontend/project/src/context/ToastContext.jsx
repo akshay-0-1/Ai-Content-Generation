@@ -1,14 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
-import { Toast } from '../types';
 import ToastContainer from '../components/common/ToastContainer';
 
-interface ToastContextType {
-  toasts: Toast[];
-  addToast: (message: string, type: Toast['type']) => void;
-  removeToast: (id: string) => void;
-}
-
-const ToastContext = createContext<ToastContextType | undefined>(undefined);
+const ToastContext = createContext(undefined);
 
 export const useToast = () => {
   const context = useContext(ToastContext);
@@ -18,22 +11,32 @@ export const useToast = () => {
   return context;
 };
 
-export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [toasts, setToasts] = useState<Toast[]>([]);
+export const ToastProvider = ({ children }) => {
+  const [toasts, setToasts] = useState([]);
 
-  const addToast = (message: string, type: Toast['type'] = 'info') => {
-    const id = Date.now().toString();
-    const newToast: Toast = { id, message, type };
+  const addToast = (toast) => {
+    // Support both object and string+type format
+    let newToast;
+    
+    if (typeof toast === 'string') {
+      const message = toast;
+      const type = arguments[1] || 'info';
+      const id = Date.now().toString();
+      newToast = { id, message, type };
+    } else {
+      // Assume it's already a toast object with id, message, and type
+      newToast = toast;
+    }
     
     setToasts(prev => [...prev, newToast]);
     
     // Automatically remove toast after 5 seconds
     setTimeout(() => {
-      removeToast(id);
+      removeToast(newToast.id);
     }, 5000);
   };
 
-  const removeToast = (id: string) => {
+  const removeToast = (id) => {
     setToasts(prev => prev.filter(toast => toast.id !== id));
   };
 

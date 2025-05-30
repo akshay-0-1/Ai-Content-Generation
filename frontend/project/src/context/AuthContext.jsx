@@ -1,13 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, AuthState } from '../types';
 
-interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -17,8 +10,8 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [authState, setAuthState] = useState<AuthState>({
+export const AuthProvider = ({ children }) => {
+  const [authState, setAuthState] = useState({
     user: null,
     isAuthenticated: false,
     isLoading: true,
@@ -59,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email, password) => {
     setAuthState(prev => ({ ...prev, isLoading: true }));
     try {
       const response = await fetch('http://localhost:8383/api/auth/login', {
@@ -79,7 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('token', data.token);
 
       // For demonstration, create user from email only; use your backend user details if available
-      const user: User = { id: '', username: '', email };
+      const user = { id: '', username: '', email };
 
       localStorage.setItem('user', JSON.stringify(user));
 
@@ -88,13 +81,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: true,
         isLoading: false,
       });
-    } catch (error: any) {
+    } catch (error) {
       setAuthState(prev => ({ ...prev, isLoading: false }));
       throw error;
     }
   };
 
-  const register = async (username: string, email: string, password: string) => {
+  const register = async (username, email, password) => {
     setAuthState(prev => ({ ...prev, isLoading: true }));
     try {
       const response = await fetch('http://localhost:8383/api/auth/register', {
@@ -110,7 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // You might want to auto-login after registration or ask user to login manually.
       // Here we just update auth state with the registered user info.
-      const user: User = { id: '', username, email };
+      const user = { id: '', username, email };
 
       localStorage.setItem('user', JSON.stringify(user));
 
@@ -119,7 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: true,
         isLoading: false,
       });
-    } catch (error: any) {
+    } catch (error) {
       setAuthState(prev => ({ ...prev, isLoading: false }));
       throw error;
     }

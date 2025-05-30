@@ -15,15 +15,13 @@ const loginSchema = z.object({
   rememberMe: z.boolean().optional(),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
-
-const LoginPage: React.FC = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const { addToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
@@ -32,15 +30,23 @@ const LoginPage: React.FC = () => {
     },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data) => {
     setIsLoading(true);
     
     try {
       await login(data.email, data.password);
-      addToast('Successfully logged in!', 'success');
+      addToast({
+        id: Date.now().toString(),
+        message: 'Successfully logged in!',
+        type: 'success'
+      });
       navigate('/generate');
     } catch (error) {
-      addToast('Invalid email or password', 'error');
+      addToast({
+        id: Date.now().toString(),
+        message: 'Invalid email or password',
+        type: 'error'
+      });
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -53,10 +59,18 @@ const LoginPage: React.FC = () => {
     
     try {
       await login('user@example.com', 'password');
-      addToast('Logged in as demo user!', 'success');
+      addToast({
+        id: Date.now().toString(),
+        message: 'Logged in as demo user!',
+        type: 'success'
+      });
       navigate('/generate');
     } catch (error) {
-      addToast('Failed to login as demo user', 'error');
+      addToast({
+        id: Date.now().toString(),
+        message: 'Failed to login as demo user',
+        type: 'error'
+      });
       console.error(error);
     } finally {
       setIsLoading(false);
