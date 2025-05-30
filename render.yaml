@@ -1,0 +1,21 @@
+services:
+  # Backend API service
+  - type: web
+    name: ai-content-generation-api
+    runtime: docker
+    rootDir: backend/Ai-Content-Generation
+    region: oregon
+    plan: free
+    branch: main
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SERVER_PORT
+        value: 8383
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRATION
+        value: 86400000
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
