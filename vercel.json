@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "buildCommand": "cd frontend/project && npm install && npm run build",
+  "outputDirectory": "frontend/project/dist",
+  "installCommand": "echo Skipping default install",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
