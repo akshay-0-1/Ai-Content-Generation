@@ -11,34 +11,18 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      - key: SPRING_APPLICATION_NAME
-        value: ai-content-generation
-      - key: SERVER_PORT
-        value: 8383
+      # Pass through environment variables from .env file
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
       - key: JWT_SECRET
         sync: false
       - key: JWT_EXPIRATION
-        value: 86400000
+        sync: false
       - key: GEMINI_API_KEY
         sync: false
-      # Map environment variables from .env file to Spring Boot expected names
-      - key: SPRING_DATASOURCE_URL
-        fromEnvVar: DB_URL
-      - key: SPRING_DATASOURCE_USERNAME
-        fromEnvVar: DB_USERNAME
-      - key: SPRING_DATASOURCE_PASSWORD
-        fromEnvVar: DB_PASSWORD
-      - key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
-        value: org.postgresql.Driver
-        
-      # Set Spring JPA properties
-      - key: SPRING_JPA_DATABASE_PLATFORM
-        value: org.hibernate.dialect.PostgreSQLDialect
-      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
-        value: update
-      - key: SPRING_JPA_SHOW_SQL
-        value: "false"
-      - key: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
-        value: org.hibernate.dialect.PostgreSQLDialect
     buildCommand: ./mvnw clean package -DskipTests
     envVarsFile: .env
