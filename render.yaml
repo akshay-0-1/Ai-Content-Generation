@@ -21,10 +21,16 @@ services:
         value: 86400000
       - key: GEMINI_API_KEY
         sync: false
-      - key: DB_URL
+      - key: SPRING_DATASOURCE_URL
         sync: false
-      - key: DB_USERNAME
+      - key: SPRING_DATASOURCE_USERNAME
         sync: false
-      - key: DB_PASSWORD
+      - key: SPRING_DATASOURCE_PASSWORD
         sync: false
+      - key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+        value: org.postgresql.Driver
+      - key: SPRING_JPA_DATABASE_PLATFORM
+        value: org.hibernate.dialect.PostgreSQLDialect
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
     buildCommand: ./mvnw clean package -DskipTests
