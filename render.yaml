@@ -21,14 +21,7 @@ services:
         value: 86400000
       - key: GEMINI_API_KEY
         sync: false
-      - key: jakarta.persistence.jdbc.url
-        sync: false
-      - key: jakarta.persistence.jdbc.user
-        sync: false
-      - key: jakarta.persistence.jdbc.password
-        sync: false
-      - key: jakarta.persistence.jdbc.driver
-        value: org.postgresql.Driver
+      # Database connection properties
       - key: SPRING_DATASOURCE_URL
         sync: false
       - key: SPRING_DATASOURCE_USERNAME
@@ -37,10 +30,26 @@ services:
         sync: false
       - key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
         value: org.postgresql.Driver
+        
+      # Jakarta Persistence properties
+      - key: jakarta.persistence.jdbc.url
+        sync: false
+      - key: jakarta.persistence.jdbc.user
+        sync: false
+      - key: jakarta.persistence.jdbc.password
+        sync: false
+      - key: jakarta.persistence.jdbc.driver
+        value: org.postgresql.Driver
+        
+      # Hibernate properties
+      - key: hibernate.dialect
+        value: org.hibernate.dialect.PostgreSQLDialect
       - key: SPRING_JPA_DATABASE_PLATFORM
         value: org.hibernate.dialect.PostgreSQLDialect
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
       - key: SPRING_JPA_SHOW_SQL
         value: "false"
+      - key: hibernate.connection.provider_class
+        value: org.hibernate.hikaricp.internal.HikariCPConnectionProvider
     buildCommand: ./mvnw clean package -DskipTests
