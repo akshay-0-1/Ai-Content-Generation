@@ -18,4 +18,3 @@ services:
       - key: JWT_EXPIRATION
         value: 86400000
     buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/*.jar

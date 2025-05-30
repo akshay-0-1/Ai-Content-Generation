@@ -15,10 +15,12 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         
-        // Allow specific origins for development
+        // Allow specific origins for development and production
         config.setAllowedOrigins(Arrays.asList(
             "http://localhost:5173", // Vite default port
-            "http://localhost:3000"  // Common React port
+            "http://localhost:3000",  // Common React port
+            "https://ai-content-generation-app.vercel.app", // Vercel production domain
+            "https://ai-content-generation-app-*.vercel.app" // Vercel preview domains
         ));
         
         // Allow all common HTTP methods

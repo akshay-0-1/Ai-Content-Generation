@@ -173,8 +173,8 @@ const ContentDetailPage = () => {
       
       console.log('Sending request to backend:', payload);
       
-      // Make API call to backend with absolute URL to bypass proxy issues
-      const apiUrl = 'http://localhost:8383/api/generate';
+      // Make API call to backend with environment variable or production URL
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://ai-content-generation-api.onrender.com/api/generate';
       console.log('Making direct API request to:', apiUrl);
       console.log('With payload:', JSON.stringify(payload));
       
