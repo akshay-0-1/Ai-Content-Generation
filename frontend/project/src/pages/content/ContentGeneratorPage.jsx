@@ -49,6 +49,7 @@ const contentTypes = [
     description: 'AI tool that generates high-quality, engaging content based on your outline or topic',
     icon: <Book size={24} />
   },
+
   { 
     id: 'seo-meta', 
     name: 'SEO Meta Description Generator', 
@@ -56,6 +57,7 @@ const contentTypes = [
     description: 'Create compelling meta descriptions that improve click-through rates',
     icon: <Code size={24} />
   },
+
   
   // YouTube content
   { 
@@ -118,6 +120,7 @@ const contentTypes = [
     description: 'Write professional press releases',
     icon: <Newspaper size={24} />
   },
+
 ];
 
 // Group content types by category
@@ -149,14 +152,23 @@ const ContentGeneratorPage = () => {
     navigate(`/generate/${contentTypeId}`);
   };
   
-  // Filter content types based on search query
-  const filteredContentTypes = searchQuery 
-    ? contentTypes.filter(type => 
-        type.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        type.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : contentTypes;
-    
+  // Filter content types based on search query or category
+  let filteredContentTypes;
+  
+  if (searchQuery === '') {
+    // Show all content types
+    filteredContentTypes = contentTypes;
+  } else if (Object.keys(categoryDisplayNames).includes(searchQuery)) {
+    // Filter by category if searchQuery matches a category name
+    filteredContentTypes = contentTypes.filter(type => type.category === searchQuery);
+  } else {
+    // Filter by text search
+    filteredContentTypes = contentTypes.filter(type => 
+      type.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      type.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
+  
   // Group filtered content types by category
   const filteredContentTypesByCategory = filteredContentTypes.reduce((acc, contentType) => {
     const category = contentType.category;
@@ -219,10 +231,19 @@ const ContentGeneratorPage = () => {
             </div>
           </div>
           
-          {/* Content type cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {Object.entries(filteredContentTypesByCategory).map(([category, types]) => (
-              <React.Fragment key={category}>
+          {/* Content type cards by category */}
+          {Object.entries(filteredContentTypesByCategory).map(([category, types]) => (
+            <div key={category} className="mb-12">
+              {/* Category Header */}
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {categoryDisplayNames[category] || category}
+                </h2>
+                <div className="w-20 h-1 bg-blue-500 mt-2"></div>
+              </div>
+              
+              {/* Content type cards for this category */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {types.map((contentType) => (
                   <div 
                     key={contentType.id} 
@@ -249,9 +270,9 @@ const ContentGeneratorPage = () => {
                     </div>
                   </div>
                 ))}
-              </React.Fragment>
-            ))}
-          </div>
+              </div>
+            </div>
+          ))}
           
           {/* No results message */}
           {filteredContentTypes.length === 0 && (
