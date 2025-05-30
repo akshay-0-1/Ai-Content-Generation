@@ -67,9 +67,25 @@ export const AuthProvider = ({ children }) => {
       }
 
       const data = await response.json(); // { message, token }
+      
+      console.log('Login response:', { ...data, token: data.token ? data.token.substring(0, 10) + '...' : 'none' });
+      
+      if (!data.token) {
+        console.error('No token received from backend during login');
+        throw new Error('Authentication failed: No token received');
+      }
 
       // Store token
       localStorage.setItem('token', data.token);
+      console.log('Token saved to localStorage');
+      
+      // Verify token was saved correctly
+      const savedToken = localStorage.getItem('token');
+      console.log('Token verification:', {
+        tokenReceived: !!data.token,
+        tokenSaved: !!savedToken,
+        tokenMatch: savedToken === data.token
+      });
 
       // For demonstration, create user from email only; use your backend user details if available
       const user = { id: '', username: '', email };
@@ -128,8 +144,27 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  // Helper function to check auth state - can be called from anywhere
+  const checkAuthState = () => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    console.log('Auth State Check:', {
+      isAuthenticated: authState.isAuthenticated,
+      tokenExists: !!token,
+      userDataExists: !!userData,
+      tokenPreview: token ? token.substring(0, 10) + '...' : 'none'
+    });
+    
+    return {
+      isAuthenticated: authState.isAuthenticated,
+      hasToken: !!token,
+      hasUserData: !!userData
+    };
+  };
+
   return (
-    <AuthContext.Provider value={{ ...authState, login, register, logout }}>
+    <AuthContext.Provider value={{ ...authState, login, register, logout, checkAuthState }}>
       {children}
     </AuthContext.Provider>
   );

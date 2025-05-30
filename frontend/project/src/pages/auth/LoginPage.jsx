@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { useAuth } from '../../context/AuthContext';
@@ -17,9 +17,13 @@ const loginSchema = z.object({
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const { addToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Get returnUrl from location state if available
+  const returnUrl = location.state?.returnUrl || '/generate';
   
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(loginSchema),
@@ -40,7 +44,8 @@ const LoginPage = () => {
         message: 'Successfully logged in!',
         type: 'success'
       });
-      navigate('/generate');
+      // Navigate to returnUrl if available, otherwise to generate page
+      navigate(returnUrl);
     } catch (error) {
       addToast({
         id: Date.now().toString(),
@@ -64,7 +69,8 @@ const LoginPage = () => {
         message: 'Logged in as demo user!',
         type: 'success'
       });
-      navigate('/generate');
+      // Navigate to returnUrl if available, otherwise to generate page
+      navigate(returnUrl);
     } catch (error) {
       addToast({
         id: Date.now().toString(),
