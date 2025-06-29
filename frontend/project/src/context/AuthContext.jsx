@@ -55,7 +55,8 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     setAuthState(prev => ({ ...prev, isLoading: true }));
     try {
-      const response = await fetch('http://localhost:8383/api/auth/login', {
+      const baseUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${baseUrl}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -106,7 +107,8 @@ export const AuthProvider = ({ children }) => {
   const register = async (username, email, password) => {
     setAuthState(prev => ({ ...prev, isLoading: true }));
     try {
-      const response = await fetch('http://localhost:8383/api/auth/register', {
+      const baseUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${baseUrl}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password }),
