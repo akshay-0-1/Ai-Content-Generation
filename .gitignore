@@ -32,6 +32,10 @@ build/
 ### VS Code ###
 .vscode/
 
+# Ignore sensitive Spring Boot configs
+backend/Ai-Content-Generation/src/main/resources/application.properties
+backend/Ai-Content-Generation/src/main/resources/application-prod.properties
+
 
 # Application properties with sensitive data
 src/main/resources/application.properties
