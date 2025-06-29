@@ -46,6 +46,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
+        // Allow all Vercel preview/prod URLs and the Railway frontend URL
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+                "https://*.vercel.app",
+                "https://*.railway.app"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList(
                 "Origin",
