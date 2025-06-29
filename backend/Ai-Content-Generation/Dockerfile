@@ -24,10 +24,7 @@ COPY --from=build /app/target/*.jar app.jar
 
 # Environment variables
 ENV SPRING_PROFILES_ACTIVE=prod
-ENV SERVER_PORT=8383
 
-# Expose the port
-EXPOSE 8383
-
+# Rely on Railway's injected $PORT; no hard-coded expose needed
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
