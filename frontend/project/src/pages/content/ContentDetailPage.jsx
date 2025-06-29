@@ -156,9 +156,6 @@ const ContentDetailPage = () => {
   
 const generateContent = async (data) => {
 
-  // Function to generate content via API call to backend
-  const generateContent = async (data) => {
-
     setIsGenerating(true);
     setError(null);
     
