@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useAuth } from '../../context/AuthContext';
 import { 
   ArrowLeft, 
   Copy, 
@@ -125,9 +126,11 @@ const ContentDetailPage = () => {
   const { contentTypeId } = useParams();
   const navigate = useNavigate();
   const { addToast } = useToast();
+  const { checkAuthState } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState('');
   const [isCopied, setIsCopied] = useState(false);
+  const [error, setError] = useState(null);
   
   const contentType = contentTypes[contentTypeId];
   
@@ -149,29 +152,161 @@ const ContentDetailPage = () => {
     resolver: zodResolver(schema)
   });
   
+<<<<<<< HEAD
   // Mock function to generate content
   const STORAGE_KEY = 'contentHistory';
 
 const generateContent = async (data) => {
+=======
+  // Function to generate content via API call to backend
+  const generateContent = async (data) => {
+>>>>>>> d893b515c577c365b209a6cd79e1817aaa09fa52
     setIsGenerating(true);
+    setError(null);
     
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Check authentication state before making the request
+    const authState = checkAuthState();
+    console.log('Authentication state before API request:', authState);
     
-    // Generate mock content based on content type
+    try {
+      // Prepare request payload - match the backend DTO structure exactly
+      // The backend expects a GenerateRequest with content and type fields
+      // content should be a string, not a JSON object
+      const formDataString = JSON.stringify(data);
+      const payload = {
+        content: formDataString,
+        type: contentTypeId
+      };
+      
+      console.log('Sending request to backend:', payload);
+      
+      // Make API call to backend with environment variable or production URL
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://ai-content-generation-api.onrender.com/api/generate';
+      console.log('Making direct API request to:', apiUrl);
+      console.log('With payload:', JSON.stringify(payload));
+      
+      // Get the JWT token from localStorage
+      const token = localStorage.getItem('token');
+      
+      // Debug: Log token availability and first few characters (for security)
+      console.log('Token available:', !!token);
+      if (token) {
+        console.log('Token preview:', token.substring(0, 10) + '...');
+      }
+      
+      if (!token) {
+        console.error('No authentication token found. User may need to log in.');
+        setError('Authentication required. Please log in.');
+        setIsGenerating(false);
+        addToast({
+          id: Date.now().toString(),
+          message: 'Authentication required. Please log in.',
+          type: 'error'
+        });
+        // Redirect to login page after a short delay
+        setTimeout(() => {
+          navigate('/login', { state: { returnUrl: `/generate/${contentTypeId}` } });
+        }, 1500);
+        return;
+      }
+      
+      // Create headers object separately for debugging
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`  // Add JWT token to the request
+      };
+      
+      // Debug: Log the exact headers being sent
+      console.log('Request headers:', headers);
+      console.log('Authorization header:', headers['Authorization']);
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(payload)
+      });
+      
+      console.log('Response status:', response.status);
+      console.log('Response headers:', [...response.headers.entries()]);
+      
+      // Debug: Log the full response details
+      console.log('Response object:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        redirected: response.redirected,
+        type: response.type,
+        url: response.url
+      });
+      
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          // Handle authentication errors
+          localStorage.removeItem('token'); // Clear invalid token
+          throw new Error('Authentication failed. Please log in again.');
+        } else {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+      }
+      
+      const result = await response.json();
+      console.log('API Response:', result);
+      
+      // Check if the response contains generatedText property (common format for AI responses)
+      if (result.generatedText) {
+        setGeneratedContent(result.generatedText);
+      } else if (result.output) {
+        setGeneratedContent(result.output);
+      } else if (typeof result === 'object') {
+        // If it's a JSON object without expected properties, stringify it for display
+        setGeneratedContent(JSON.stringify(result, null, 2));
+      } else {
+        // Fallback to the raw result
+        setGeneratedContent(result.toString() || 'Content generated but no output found');
+      }
+      setIsGenerating(false);
+      addToast({
+        id: Date.now().toString(),
+        message: 'Content generated successfully!',
+        type: 'success'
+      });
+      return;
+    } catch (err) {
+      console.error('Error generating content:', err);
+      const errorMessage = err.message || 'Failed to generate content. Please try again.';
+      setError(errorMessage);
+      setIsGenerating(false);
+      addToast({
+        id: Date.now().toString(),
+        message: errorMessage,
+        type: 'error'
+      });
+      
+      // If authentication error, redirect to login
+      if (errorMessage.includes('Authentication') || errorMessage.includes('log in')) {
+        setTimeout(() => {
+          navigate('/login', { state: { returnUrl: `/generate/${contentTypeId}` } });
+        }, 1500);
+      }
+    }
+  };
+  
+  const generateMockContent = (data) => {
     let mockContent = '';
     
     if (contentTypeId === 'blog-title') {
-      mockContent = `<h1>How to Fuel Your Next Adventure: The Ultimate Red Bull Guide</h1>
-<h2>10 Unexpected Ways to Use Red Bull (Beyond Just a Pick-Me-Up)</h2>
-<h2>Red Bull vs. Other Energy Drinks: Which One Reigns Supreme?</h2>
-<h2>Is Red Bull Actually Bad for You? Debunking the Myths</h2>
-<h2>Red Bull Recipes: 5 Creative Cocktails and Mocktails</h2>
-<h2>Top 5 Red Bull Flavors You Need to Try (and Where to Find Them!)</h2>
-<h2>How Red Bull Became a Global Phenomenon: A Brand Story</h2>
-<h2>Red Bull's Extreme Sports Sponsorship: A Marketing Masterclass</h2>
-<h2>Does Red Bull Really Give You Wings? The Science Behind the Hype</h2>
-<h2>7 Genius Ways to Incorporate Red Bull Into Your Workout Routine</h2>`;
+      mockContent = `10 Unique Blog Title Ideas for Your Next Post
+
+1. "Unlock the Secrets of [Topic]: A Beginner's Guide"
+2. "The Ultimate [Topic] Checklist: Tips and Tricks"
+3. "From [Topic] to [Topic]: A Journey of Discovery"
+4. "The Top [Number] [Topic] Mistakes You're Making (And How to Fix Them)"
+5. "The [Topic] Revolution: How [Topic] is Changing the Game"
+6. "Why [Topic] Matters More Than Ever in 2025"
+7. "[Topic] 101: Everything You Need to Know"
+8. "How [Topic] Changed My Life (And Could Change Yours Too)"
+9. "[Number] Surprising Facts About [Topic] You Never Knew"
+10. "The Future of [Topic]: Trends and Predictions"`;
     } else if (contentTypeId === 'blog-outline') {
       mockContent = `# How to Start a Successful Blog in 2025
 
@@ -339,6 +474,7 @@ What's your go-to energy boost? Are you team Red Bull or do you have another sec
 #RedBullGivesYouWings #EnergyBoost #MondayMotivation #PowerThrough`;
     }
     
+    // Set the mock content and update UI state
     setGeneratedContent(mockContent);
     // Persist to history
     try {
@@ -359,6 +495,11 @@ What's your go-to energy boost? Are you team Red Bull or do you have another sec
       console.error('Failed saving history', e);
     }
     setIsGenerating(false);
+    addToast({
+      id: Date.now().toString(),
+      message: 'Content generated (mock data)',
+      type: 'info'
+    });
   };
   
   const onSubmit = (data) => {
@@ -429,10 +570,10 @@ What's your go-to energy boost? Are you team Red Bull or do you have another sec
             </Button>
           </div>
           
-          <div className="flex flex-col lg:flex-row gap-6">
+          <div className="flex flex-col lg:flex-row gap-6 h-full">
             {/* Left Column - Input Form */}
-            <div className="w-full lg:w-1/2">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <div className="w-full lg:w-1/2 h-full">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 h-full flex flex-col">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                   {contentType.name}
                 </h1>
@@ -440,7 +581,7 @@ What's your go-to energy boost? Are you team Red Bull or do you have another sec
                   {contentType.description}
                 </p>
                 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 flex-grow overflow-auto">
                   {contentType.formFields.map((field) => (
                     <div key={field.name}>
                       {field.type === 'textarea' ? (
@@ -478,7 +619,7 @@ What's your go-to energy boost? Are you team Red Bull or do you have another sec
             </div>
             
             {/* Right Column - Generated Content */}
-            <div className="w-full lg:w-1/2">
+            <div className="w-full lg:w-1/2 h-full">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 h-full flex flex-col">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -558,12 +699,52 @@ What's your go-to energy boost? Are you team Red Bull or do you have another sec
                   </div>
                 )}
                 
-                <div className="flex-grow overflow-auto">
+                <div className="flex-grow overflow-auto max-h-[calc(100vh-250px)]" style={{ scrollbarWidth: 'thin' }}>
                   {generatedContent ? (
-                    <div 
-                      className="prose prose-sm dark:prose-invert max-w-none h-full"
-                      dangerouslySetInnerHTML={{ __html: generatedContent }}
-                    />
+                    <div className="prose prose-sm dark:prose-invert max-w-none h-full">
+                      {/* Check if content is HTML, markdown, or plain text and render appropriately */}
+                      {generatedContent.startsWith('<') && generatedContent.includes('</') ? (
+                        <div dangerouslySetInnerHTML={{ __html: generatedContent }} />
+                      ) : generatedContent.includes('##') || generatedContent.includes('*') ? (
+                        // Apply basic markdown styling for better readability
+                        <div className="markdown-content pb-4">
+                          {generatedContent.split('\n').map((line, index) => {
+                            // Remove asterisks from text
+                            let cleanLine = line.replace(/\*\*/g, '');
+                            
+                            // Handle headings
+                            if (cleanLine.startsWith('# ')) {
+                              return <h1 key={index} className="text-3xl font-bold mt-6 mb-4 text-blue-700 dark:text-blue-400 border-b pb-2">{cleanLine.substring(2)}</h1>;
+                            } else if (cleanLine.startsWith('## ')) {
+                              return <h2 key={index} className="text-2xl font-bold mt-5 mb-3 text-blue-600 dark:text-blue-300">{cleanLine.substring(3)}</h2>;
+                            } else if (cleanLine.startsWith('### ')) {
+                              return <h3 key={index} className="text-xl font-bold mt-4 mb-2 text-blue-500 dark:text-blue-200">{cleanLine.substring(4)}</h3>;
+                            } else if (cleanLine.startsWith('#### ')) {
+                              return <h4 key={index} className="text-lg font-bold mt-3 mb-2 text-blue-500 dark:text-blue-200">{cleanLine.substring(5)}</h4>;
+                            } else if (cleanLine.startsWith('* ') || cleanLine.startsWith('- ')) {
+                              // Handle bullet points with better styling
+                              return (
+                                <div key={index} className="flex items-start mb-2 ml-4">
+                                  <span className="text-blue-500 dark:text-blue-300 mr-2 mt-1">•</span>
+                                  <span>{cleanLine.substring(2)}</span>
+                                </div>
+                              );
+                            } else if (cleanLine.trim() === '') {
+                              // Handle empty lines
+                              return <div key={index} className="h-2"></div>;
+                            } else if (cleanLine.includes('Outline ')) {
+                              // Special handling for outline titles
+                              return <h2 key={index} className="text-2xl font-bold mt-8 mb-4 text-green-600 dark:text-green-400 border-b border-green-200 dark:border-green-800 pb-2">{cleanLine}</h2>;
+                            } else {
+                              // Regular text
+                              return <p key={index} className="mb-3 leading-relaxed">{cleanLine}</p>;
+                            }
+                          })}
+                        </div>
+                      ) : (
+                        <pre className="whitespace-pre-wrap">{generatedContent}</pre>
+                      )}
+                    </div>
                   ) : (
                     <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400 text-center">
                       <p>Your AI-generated content appears here</p>
