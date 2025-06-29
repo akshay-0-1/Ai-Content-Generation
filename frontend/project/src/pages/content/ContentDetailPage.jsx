@@ -152,15 +152,13 @@ const ContentDetailPage = () => {
     resolver: zodResolver(schema)
   });
   
-<<<<<<< HEAD
-  // Mock function to generate content
-  const STORAGE_KEY = 'contentHistory';
 
+  
 const generateContent = async (data) => {
-=======
+
   // Function to generate content via API call to backend
   const generateContent = async (data) => {
->>>>>>> d893b515c577c365b209a6cd79e1817aaa09fa52
+
     setIsGenerating(true);
     setError(null);
     
