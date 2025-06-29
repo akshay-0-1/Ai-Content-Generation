@@ -8,12 +8,16 @@ import com.project.Ai_Content_Generation.jwt.JwtUtil;
 import com.project.Ai_Content_Generation.entity.User;
 import com.project.Ai_Content_Generation.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collections;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 @Service
 public class AuthService {
@@ -48,15 +52,18 @@ public class AuthService {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
-        } catch (BadCredentialsException e) {
-            throw new RuntimeException("Invalid email or password");
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
         UserDetails user = userRepository.findByEmail(request.getEmail())
                 .map(u -> new org.springframework.security.core.userdetails.User(
                         u.getEmail(),
                         u.getPassword(),
-                        u.getRoles().stream().map(SimpleGrantedAuthority::new).toList()
-                )).orElseThrow(() -> new RuntimeException("User not found"));
+                        (u.getRoles() == null ? Collections.<String>emptySet() : u.getRoles())
+                        .stream()
+                        .map(role -> new SimpleGrantedAuthority(role))
+                        .toList()
+                )).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
 
         // Pass email as username to JWT util for token generation (your JwtUtil uses token subject as username)
         String token = jwtUtil.generateToken(user.getUsername());  // user.getUsername() is email here

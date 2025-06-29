@@ -150,7 +150,9 @@ const ContentDetailPage = () => {
   });
   
   // Mock function to generate content
-  const generateContent = async (data) => {
+  const STORAGE_KEY = 'contentHistory';
+
+const generateContent = async (data) => {
     setIsGenerating(true);
     
     // Simulate API call delay
@@ -338,6 +340,24 @@ What's your go-to energy boost? Are you team Red Bull or do you have another sec
     }
     
     setGeneratedContent(mockContent);
+    // Persist to history
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const history = raw ? JSON.parse(raw) : [];
+      const firstLine = mockContent.split(/\n|\r/).find(l=>l.trim().length>0) || '';
+      history.unshift({
+        id: Date.now().toString(),
+        title: data.title || contentType?.name || 'Untitled',
+        content: firstLine + (firstLine.length < mockContent.length ? '...' : ''),
+        fullContent: mockContent,
+        contentType: { id: contentTypeId, name: contentType?.name || '', category: contentType?.category || '', description: '' },
+        createdAt: new Date().toISOString(),
+        prompt: JSON.stringify(data)
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+    } catch(e){
+      console.error('Failed saving history', e);
+    }
     setIsGenerating(false);
   };
   

@@ -5,10 +5,11 @@ import Input from '../../components/common/Input';
 import Dropdown from '../../components/common/Dropdown';
 import { useToast } from '../../context/ToastContext';
 
-// Mock content history data
-const mockContentHistory = [
+// Retrieve history from localStorage; fallback to placeholder data on first run
+const STORAGE_KEY = 'contentHistory';
+const placeholderHistory = [
   {
-    id: '1',
+    id: 'placeholder-1',
     title: 'The Future of AI Technology',
     content: 'AI technology is revolutionizing industries across the globe...',
     contentType: { id: 'blog', name: 'Blog Post', category: 'professional', description: '' },
@@ -70,11 +71,11 @@ const ContentHistoryPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [dateFilter, setDateFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
-  const [filteredContent, setFilteredContent] = useState(mockContentHistory);
+  const [filteredContent, setFilteredContent] = useState(loadHistory());
 
   useEffect(() => {
     // Apply filters
-    let filtered = mockContentHistory;
+    let filtered = loadHistory();
     
     // Search filter
     if (searchQuery) {
@@ -114,6 +115,7 @@ const ContentHistoryPage = () => {
     }
     
     setFilteredContent(filtered);
+    saveHistory(filtered);
   }, [searchQuery, dateFilter, typeFilter]);
 
   // Format date for display
