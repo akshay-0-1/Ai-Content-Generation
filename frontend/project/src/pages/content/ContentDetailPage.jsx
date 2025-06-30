@@ -175,10 +175,13 @@ const generateContent = async (data) => {
       
       console.log('Sending request to backend:', payload);
       
-      // Make API call to backend with environment variable or production URL
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://ai-content-generation-api.onrender.com/api/generate';
-      console.log('Making direct API request to:', apiUrl);
-      console.log('With payload:', JSON.stringify(payload));
+      // Construct the /api/generate endpoint.
+      // If VITE_API_URL is set (e.g., https://ai-content-generation.up.railway.app)
+      // we always append /api/generate to it. Otherwise fall back to the Render URL.
+      const baseUrl = import.meta.env.VITE_API_URL;
+      const apiUrl = baseUrl
+        ? `${baseUrl.replace(/\/$/, '')}/api/generate` // ensure no double slashes
+        : 'https://ai-content-generation-api.onrender.com/api/generate';
       
       // Get the JWT token from localStorage
       const token = localStorage.getItem('token');
